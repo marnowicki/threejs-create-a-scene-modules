@@ -12,13 +12,13 @@ export class Engine {
         this.camera = new THREE.PerspectiveCamera(FOV, this.aspect, 0.1, 1000);
         this.clock = new THREE.Clock();
 
-        this.camera.position.z = 5;
+        this.camera.position.set(0, 2, 5);
+        this.camera.lookAt(0, 0, 0);
 
         this.animateBinded = this.animate.bind(this);
 
         this.resizeRemove = this.addEventListener(this.parent, 'resize', this.resize);
-
-        this.webGLAvaliable = WEBGL.isWebGLAvailable();
+        this._started = false;
     }
 
     addEventListener(parent, event, listener) {
@@ -40,6 +40,10 @@ export class Engine {
         this.renderer.setSize(this.parent.innerWidth, this.parent.innerHeight);
     }
 
+    get webGLAvaliable() {
+        return WEBGL.isWebGLAvailable();
+    }
+
     get domElement() {
         if (this.webGLAvaliable) {
             return this.renderer.domElement;
@@ -48,13 +52,32 @@ export class Engine {
         }
     }
 
-    start() {
+    start(ms = 0) {
+        this.ms = ms;
+        this.started = true;
         this.animate();
+    }
+    stop() {
+        this.started = false;
+    }
+    toggle() {
+        if (this.started) {
+            this.stop();
+        } else {
+            this.start(this.ms)
+        }
     }
 
     animate() {
+        if (!this.started)
+            return;
         const delta = this.clock.getDelta();
-        requestAnimationFrame(this.animateBinded);
+
+        if (this.ms > 0)
+            setTimeout(() => { requestAnimationFrame(this.animateBinded); }, 100)
+        else
+            requestAnimationFrame(this.animateBinded);
+
         this.scene.traverse(obj => {
             if (obj.userData.object && obj.userData.object.update) {
                 obj.userData.object.update(delta);
