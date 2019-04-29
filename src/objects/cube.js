@@ -8,7 +8,7 @@ export class Cube{
         this.threeObject.userData.object = this;
     }
 
-    update(){
+    update(delta){
         this.threeObject.rotation.x += 0.01;
         this.threeObject.rotation.y += 0.01;
     }
