@@ -17,5 +17,8 @@
     "dev": "webpack-dev-server --open"
   },
   "author": "Mariusz Nowicki",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "url": "https://github.com/marnowicki/threejs-create-a-scene-modules"
+  }
 }
