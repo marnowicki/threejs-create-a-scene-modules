@@ -1,13 +1,12 @@
 import * as THREE from 'three'
 
 export class Engine {
-    constructor(parent){
-        this.parent = parent || window;
-        this.aspect = this.parent.innerWidth / this.parent.innerHeight;
+    constructor({parent = window, FOV = 60} = {}){
+        this.aspect = parent.innerWidth / parent.innerHeight;
         this.renderer = new THREE.WebGLRenderer();
-        this.renderer.setSize(this.parent.innerWidth, this.parent.innerHeight);
+        this.renderer.setSize(parent.innerWidth, parent.innerHeight);
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(75, this.aspect, 0.1, 1000);
+        this.camera = new THREE.PerspectiveCamera(FOV, this.aspect, 0.1, 1000);
         this.clock = new THREE.Clock();
 
         this.camera.position.z = 5;
