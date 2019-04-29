@@ -2,6 +2,8 @@ import * as THREE from 'three'
 
 export class Engine {
     constructor({parent = window, FOV = 60} = {}){
+        this.parent = parent;
+        this.FOV = FOV;
         this.aspect = parent.innerWidth / parent.innerHeight;
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setSize(parent.innerWidth, parent.innerHeight);
@@ -12,6 +14,27 @@ export class Engine {
         this.camera.position.z = 5;
 
         this.animateBinded = this.animate.bind(this);
+
+        this.resizeRemove = this.addEventListener(this.parent, 'resize', this.resize);
+    }
+
+    addEventListener(parent, event, listener){
+        let l = listener.bind(this);
+        parent.addEventListener(event, l, false);
+        return () => {
+            parent.removeEventListener(event, l, false);
+        }
+    }
+
+    dispose(){
+        this.resizeRemove();
+    }
+
+    resize(){
+        this.aspect = this.parent.innerWidth / this.parent.innerHeight;
+        this.camera.aspect = this.aspect;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(this.parent.innerWidth, this.parent.innerHeight);
     }
 
     get domElement(){
@@ -34,7 +57,6 @@ export class Engine {
     }
 
     add(object){
-        if(object)
-            this.scene.add(object.threeObject || object);
+        object && this.scene.add(object.threeObject || object);
     }
 }
