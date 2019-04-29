@@ -1,7 +1,8 @@
+import * as WEBGL from 'exports-loader?WEBGL!three/examples/js/WebGL.js';
 import * as THREE from 'three'
 
 export class Engine {
-    constructor({parent = window, FOV = 60} = {}){
+    constructor({ parent = window, FOV = 60 } = {}) {
         this.parent = parent;
         this.FOV = FOV;
         this.aspect = parent.innerWidth / parent.innerHeight;
@@ -18,7 +19,7 @@ export class Engine {
         this.resizeRemove = this.addEventListener(this.parent, 'resize', this.resize);
     }
 
-    addEventListener(parent, event, listener){
+    addEventListener(parent, event, listener) {
         let l = listener.bind(this);
         parent.addEventListener(event, l, false);
         return () => {
@@ -26,26 +27,30 @@ export class Engine {
         }
     }
 
-    dispose(){
+    dispose() {
         this.resizeRemove();
     }
 
-    resize(){
+    resize() {
         this.aspect = this.parent.innerWidth / this.parent.innerHeight;
         this.camera.aspect = this.aspect;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(this.parent.innerWidth, this.parent.innerHeight);
     }
 
-    get domElement(){
-        return this.renderer.domElement;
+    get domElement() {
+        if (WEBGL.isWebGLAvailable()) {
+            return this.renderer.domElement;
+        } else {
+            return WEBGL.getWebGLErrorMessage();
+        }
     }
 
-    start(){
+    start() {
         this.animate();
     }
 
-    animate(){
+    animate() {
         const delta = this.clock.getDelta();
         requestAnimationFrame(this.animateBinded);
         this.scene.traverse(obj => {
@@ -56,7 +61,7 @@ export class Engine {
         this.renderer.render(this.scene, this.camera);
     }
 
-    add(object){
+    add(object) {
         object && this.scene.add(object.threeObject || object);
     }
 }
