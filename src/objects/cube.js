@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 
 export class Cube{
-    constructor(){
-        this.geometry = new THREE.BoxGeometry(1,1,1);
+    constructor({size=1, position} = {}){
+        this.geometry = new THREE.BoxGeometry(size,size,size);
         this.material = new THREE.MeshNormalMaterial();
         this.threeObject = new THREE.Mesh(this.geometry, this.material);
+        this.threeObject.position.copy(position || new THREE.Vector3());
         this.threeObject.userData.object = this;
     }
 
