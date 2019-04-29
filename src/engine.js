@@ -17,6 +17,8 @@ export class Engine {
         this.animateBinded = this.animate.bind(this);
 
         this.resizeRemove = this.addEventListener(this.parent, 'resize', this.resize);
+
+        this.webGLAvaliable = WEBGL.isWebGLAvailable();
     }
 
     addEventListener(parent, event, listener) {
@@ -39,7 +41,7 @@ export class Engine {
     }
 
     get domElement() {
-        if (WEBGL.isWebGLAvailable()) {
+        if (this.webGLAvaliable) {
             return this.renderer.domElement;
         } else {
             return WEBGL.getWebGLErrorMessage();
